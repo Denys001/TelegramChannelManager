@@ -1,0 +1,5 @@
+{
+    "port": 5000,
+    "jwtSecret": "qwertyuiop",
+    "mongoDB": "mongodb+srv://Denys001:qwerty171@cluster0.kmq97.azure.mongodb.net/managerTelegramChannel?retryWrites=true&w=majority"
+}
