@@ -9,13 +9,13 @@ const router = Router()
 router.post(
     '/register',
     [
-        check('email', "Введіть електроний адрес").exists().notEmpty(),
+        check('email', "Введіть електроний адрес").notEmpty(),
         check('email', "Неправильний формат електроного адресу").isEmail(),
-        check('nickName', "Введіть нікнейм").exists().notEmpty(),
+        check('nickName', "Введіть нікнейм").notEmpty(),
         check('nickName', "Довжина нікнейму повина бути мінімум 6 букв").isLength({ min: 6 }),
-        check('password', "Введіть пароль").exists().notEmpty(),
+        check('password', "Введіть пароль").notEmpty(),
         check('password', "Довжина паролю повина бути мінімум 6 букв").isLength({ min: 6 }),
-        check('passwordConfirm', "Введіть пароль для пітвердження").exists().notEmpty(),
+        check('passwordConfirm', "Введіть пароль для пітвердження").notEmpty(),
     ],
     async (req, res) => {
         try {
@@ -72,9 +72,9 @@ router.post(
 router.post(
     '/login',
     [
-        check('email', "Введіть електроний адрес").exists().notEmpty(),
+        check('email', "Введіть електроний адрес").notEmpty(),
         check('email', "Неправильний формат електроного адресу").isEmail(),
-        check('password', "Введіть пароль").exists().notEmpty(),
+        check('password', "Введіть пароль").notEmpty(),
     ],
     async (req, res) => {
         try {
