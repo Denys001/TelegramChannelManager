@@ -1,6 +1,5 @@
-const request = async (url, method = "GET", data = null) => {
+const request = async (url, method = "GET", data = null, headers = {}) => {
     try{
-        const headers = {}
         let body
         if(data){
             headers['Content-Type'] = 'application/json'

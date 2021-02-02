@@ -3,7 +3,8 @@ import { stopSubmit } from 'redux-form'
 const initialState = {
     fetching: false,
     isAuth: false,
-    token: null
+    token: null,
+    refreshToken: null
 }
 const SETFETCHING = "setFetching"
 const SETAUTH = "setAuth"
@@ -18,17 +19,16 @@ export default (state = initialState, action) => {
     }
 }
 export const setFetching = (value) => ({ type: SETFETCHING, payload: { fetching: value } })
-export const setAuth = (token) => ({ type: SETAUTH, payload: { isAuth: true, token } })
+export const setAuth = (token, refreshToken) => ({ type: SETAUTH, payload: { isAuth: true, token, refreshToken } })
 
 export const LoginRequest = (data) => {
     return (dispatch) => {
         dispatch(setFetching(true))
         authAPI.login(data).then(res => {
-            if (res.ResualtCode === 1) {
+            if (res.ResultCode === 1) {
                 dispatch(stopSubmit('login', { [res.field]: res.message }))
             } else {
-                dispatch(setAuth(res.token))
-                console.log('auth is success');
+                dispatch(setAuth(res.token, res.refreshToken))
             }
             dispatch(setFetching(false))
 
@@ -40,12 +40,15 @@ export const RegisterRequest = (data) => {
     return (dispatch) => {
         dispatch(setFetching(true))
         authAPI.register(data).then(res => {
-            if (res.ResualtCode === 1) {
+            if (res.ResultCode === 1) {
                 dispatch(stopSubmit('register', { [res.field]: res.message }))
             } else {
                 dispatch(setAuth(res.token))
-                console.log('auth is success');
+                authAPI.login(data).then(res => {
+                    dispatch(setAuth(res.token, res.refreshToken))
+                })
             }
+            
             dispatch(setFetching(false))
         })
 

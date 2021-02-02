@@ -1,5 +1,7 @@
 {
     "port": 5000,
-    "jwtSecret": "qwertyuiop",
+    "jwtSecret": "vcbcvbtr654ytgr33",
+    "jwtSecretRefresh": "43tbny454423fgg43",
+    "botToken": "1523418706:AAEKsqYr1apnySDnao40hzl0Cxn0Xc8a7As",
     "mongoDB": "mongodb+srv://Denys001:qwerty171@cluster0.kmq97.azure.mongodb.net/managerTelegramChannel?retryWrites=true&w=majority"
 }
