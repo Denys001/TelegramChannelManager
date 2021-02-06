@@ -11,7 +11,11 @@ const useStyles = makeStyles((theme) => ({
         marginTop: 10
     },
     img: {
-        borderRadius: 5
+        borderRadius: 5,
+        [theme.breakpoints.down(375)]: {
+            height: 100
+        },
+        
     }
 }))
 const OneStep = ({ text, imgPath }) => {

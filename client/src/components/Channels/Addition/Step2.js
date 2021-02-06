@@ -2,6 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
+import Divider from '@material-ui/core/Divider'
 import StepLabel from '@material-ui/core/StepLabel'
 import StepContent from '@material-ui/core/StepContent'
 import StepButton from '@material-ui/core/StepButton'
@@ -45,12 +46,12 @@ const useStyles = makeStyles((theme) => ({
     switch (step) {
       case 0:
         return <OneStep 
-                    text="Згенерований код відправте в чат телеграм каналу"
+                    text="Згенерований код відправте в чат створеного телеграм каналу"
                     imgPath={step1_img}
                 />
       case 1:
         return <OneStep 
-                    text="В сторокі пошука знайдіть телеграм бота з назвою tcm_xBot"
+                    text="В пошуку знайдіть телеграм бота з назвою tcm_xBot"
                     imgPath={step2_img}
                 />
       case 2:
@@ -121,6 +122,7 @@ const useStyles = makeStyles((theme) => ({
   
     return (
       <div className={classes.root}>
+        <Divider/>
         <Stepper nonLinear activeStep={activeStep} orientation="vertical">
           {steps.map((label, index) => (
             <Step key={label}>

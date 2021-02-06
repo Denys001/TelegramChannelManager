@@ -13,6 +13,7 @@ import Step1 from './Step1'
 import Step2 from './Step2'
 import { connect, useSelector } from 'react-redux'
 import { addChannels, setErrorNull } from '../../../redux/reducers/channelsReducer'
+import { Divider } from '@material-ui/core'
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
@@ -26,6 +27,11 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: 'auto',
       marginRight: 'auto',
     },
+    [theme.breakpoints.down(375)]: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
+      marginTop: theme.spacing(2),
+    },
   },
   paper: {
     marginTop: theme.spacing(3),
@@ -35,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(6),
       marginBottom: theme.spacing(6),
       padding: theme.spacing(3),
+    },
+    [theme.breakpoints.down(375)]: {
+      margin: theme.spacing(0),
+      padding: theme.spacing(1),
     },
   },
   stepper: {

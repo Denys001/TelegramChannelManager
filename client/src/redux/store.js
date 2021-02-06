@@ -3,10 +3,12 @@ import { reducer as formReducer } from 'redux-form'
 import thunkMiddleware from "redux-thunk"
 import authReducer from './reducers/authReducer'
 import channelsReducer from './reducers/channelsReducer'
+import postsReducer from './reducers/postsReducer'
 const reducers = combineReducers({
     form: formReducer,
     auth: authReducer,
-    channels: channelsReducer
+    channels: channelsReducer,
+    posts: postsReducer,
 })
 
 export const store = createStore(reducers, compose(
