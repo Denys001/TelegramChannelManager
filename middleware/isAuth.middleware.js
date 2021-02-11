@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1] // "Bearer TOKEN"
 
     if (!token) {
-      return res.status(401).json({ ResultCode: 1, message: 'Користувач не авторизований' })
+      return res.status(401).json({ "ResultCode": 1, message: 'Користувач не авторизований' })
     }
 
     const decoded = jwt.verify(token, config.get('jwtSecret'))
@@ -19,6 +19,6 @@ module.exports = (req, res, next) => {
     next()
 
   } catch (e) {
-    res.status(401).json({ ResultCode: 1, message: 'Користувач не авторизований' })
+    res.status(401).json({ "ResultCode": 1, message: 'Користувач не авторизований' })
   }
 }

@@ -91,7 +91,7 @@ function ChannelPage(props) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <CreatePost></CreatePost>
+        <CreatePost channel_id={id}></CreatePost>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Posts></Posts>
