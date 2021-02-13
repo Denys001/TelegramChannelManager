@@ -14,7 +14,6 @@ const usersAPI = {
         return result.data
     },
     sendPhoto: async (content, chat_id, image) => {
-        console.log('img', image);
         var fd = new FormData()
         if(image){
             fd.append('photo', fs.createReadStream(image))
@@ -29,12 +28,9 @@ const usersAPI = {
                 'Content-Type': "multipart/form-data"
             }           
         })
-        console.log(result);
         } catch (error) {
             console.log("erorr", error);
         }
-        
-        console.log('tel', result);
         return result.data
     }
 }

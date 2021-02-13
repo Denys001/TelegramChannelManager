@@ -14,13 +14,14 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../Loader/Loader'
-import {loadChannels} from './../../../redux/reducers/channelsReducer'
+import { loadChannels } from './../../../redux/reducers/channelsReducer'
 import { Link } from 'react-router-dom'
 import css from './Menu.module.css'
 import TelegramIcon from '@material-ui/icons/Telegram'
 import AddBoxIcon from '@material-ui/icons/AddBox'
+import channelsReducer from '../../../modules/channels'
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       width: drawerWidth,
       flexShrink: 0,
-      
+
     },
   },
   appBar: {
@@ -74,14 +75,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ResponsiveDrawer(props) {
-
+  const isFetching = useSelector(channelsReducer.getFetching)
+  const channels = useSelector(channelsReducer.getChannels)
+  const dispatch = useDispatch()
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
   useEffect(() => {
-    props.loadChannels(props.token)
+    dispatch(channelsReducer.loadChannels())
   }, [])
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -89,34 +94,36 @@ function ResponsiveDrawer(props) {
   const drawer = (
     <div>
       <div className={classes.toolbar} />
-        <Divider />
-        <List>
-          <Link to='/channel/add' className={css.Link}>
-            <ListItem button key="1">
-              <ListItemIcon><AddBoxIcon /></ListItemIcon>
-              <ListItemText primary="Додати канал" />
+      <Divider />
+      <List>
+        <Link to='/channel/add' className={css.Link}>
+          <ListItem button key="1">
+            <ListItemIcon><AddBoxIcon /></ListItemIcon>
+            <ListItemText primary="Додати канал" />
+          </ListItem>
+        </Link>
+      </List>
+      <Divider />
+      <List>
+        {channels !== undefined && channels.length !== 0 && channels.map((el) => (
+          <Link to={`/channel/${el._id}`} className={css.Link}>
+            <ListItem button key={el.name}>
+              <ListItemIcon><TelegramIcon /></ListItemIcon>
+              <ListItemText primary={el.name} />
             </ListItem>
           </Link>
-        </List>
-        <Divider />
-        <List>
-          {props.channels && props.channels.length !== 0 && props.channels.map((el) => (
-            <Link to={`/channel/${el._id}`} className={css.Link}>
-              <ListItem button key={el.name}>
-                <ListItemIcon><TelegramIcon /></ListItemIcon>
-                <ListItemText primary={el.name} />
-              </ListItem>
-            </Link>
-          ))}
-        </List>
+        ))}
+      </List>
     </div>
   );
 
   const container = window !== undefined ? () => window().document.body : undefined;
 
+
+
   return (
     <div className={classes.root}>
-      {props.fetching && <Loader></Loader>}
+      {isFetching && <Loader></Loader>}
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
@@ -174,20 +181,7 @@ function ResponsiveDrawer(props) {
 }
 
 ResponsiveDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window: PropTypes.func,
 };
-const mapStateToProps = (state) => {
-  return {
-    channels: state.channels.channels,
-    fetching: state.channels.fetching,
-    token: state.auth.token
-  }
-}
-const mapDispatchToProps = {
-  loadChannels
-}
-export default connect(mapStateToProps,mapDispatchToProps)(ResponsiveDrawer)
+
+export default ResponsiveDrawer

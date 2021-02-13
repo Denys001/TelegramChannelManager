@@ -45,13 +45,11 @@ router.post(
             }
             const { content, telegramId, channelId } = req.body
             const result = await api.sendMessage(content, telegramId)
-            console.log("result", result);
             const post = new Post({
                 telegramId: result.result.message_id,
                 content,
-                channel: channelId
+                channelId
             })
-            console.log(post);
             await post.save()
             res.status(201).json({
                 "message": "Пост створено був створений",
@@ -73,32 +71,25 @@ router.post(
         check('channelId', "Id каналу обов'язкове").notEmpty(),
     ],
     isAuth,
-    upload.single('postsImage'),
+    upload.single('photo'),
     async (req, res) => {
         try {
-            const { content, chat_id } = req.body
-
-            // const errors = validationResult(req.body)
-            // if (!errors.isEmpty()) {
-            //     return res.status(400).json({
-            //         message: "Не коректні дані",
-            //         errors: errors.array(),
-            //         "ResultCode": 1
-            //     })
-            // }
-            //const {content, telegramId, channelId} = req.body
-            //const result = await api.sendPhoto(content, telegramId, req.file.path)
-            //console.log(result);
-            // const post = new Post({
-            //     telegramId: result.result.message_id,
-            //     content,
-            //     channel: channelId
-            // })
-            // if(req.file){
-            //     post.image = req.file.path
-            // }
-            // console.log(post);
-            // await post.save()
+            const errors = validationResult(req.body)
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    message: "Не коректні дані",
+                    errors: errors.array(),
+                    "ResultCode": 1
+                })
+            }
+            const { channelId, telegramId, content } = req.body
+            const post = new Post({
+                telegramId,
+                content,
+                channelId,
+                image: req.file.path
+            })
+            await post.save()
             res.status(201).json({
                 "message": "Пост створено був створений",
                 "ResultCode": 0

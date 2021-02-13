@@ -11,9 +11,10 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Step1 from './Step1'
 import Step2 from './Step2'
-import { connect, useSelector } from 'react-redux'
-import { addChannels, setErrorNull } from '../../../redux/reducers/channelsReducer'
-import { Divider } from '@material-ui/core'
+import { useSelector, useDispatch } from 'react-redux'
+import channels from '../../../modules/channels'
+
+
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
@@ -76,10 +77,16 @@ function getStepContent(step) {
 }
 
 const Checkout = (props) => {
+  const dispatch = useDispatch()
+  const code = useSelector(channels.getCode)
+  const isError = useSelector(channels.getIsError)
+  const errorMessage_ = useSelector(channels.getErrorMessage)
+
   const classes = useStyles()
   const [activeStep, setActiveStep] = React.useState(0)
   const [open, setOpen] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('error')
+  const [isDone, setIsDone] = React.useState(false)
   const handleNext = () => {
     setActiveStep(activeStep + 1)
   }
@@ -87,20 +94,26 @@ const Checkout = (props) => {
     setActiveStep(activeStep - 1)
   }
   const Finish = async () => {
-    const error = await props.addChannels(props.code, props.token)
-    if (error) {
-      setErrorMessage(error)
+    //const error = await props.addChannels(props.code, props.token)
+    dispatch(channels.addChannels())
+    setIsDone(true)
+  }
+  if (isDone) {
+    if (isError) {
+      setErrorMessage(errorMessage_)
       setOpen(true)
+      setIsDone(false)
     }
     else {
       handleNext()
+      setIsDone(false)
     }
   }
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
     }
-    props.setErrorNull()
+    //dispatch(channels.setCodeNULL())
     setOpen(false)
   }
   return (
@@ -144,7 +157,7 @@ const Checkout = (props) => {
                       color="primary"
                       onClick={activeStep === steps.length - 1 ? Finish : handleNext}
                       className={classes.button}
-                      disabled={!props.code && true}
+                      disabled={!code && true}
                     >
                       {activeStep === steps.length - 1 ? 'Завершити' : 'Наступний крок'}
                     </Button>
@@ -157,14 +170,5 @@ const Checkout = (props) => {
     </React.Fragment>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    code: state.channels.code,
-    token: state.auth.token
-  }
-}
-const mapDispatchToProps = {
-  addChannels, setErrorNull
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Checkout)
+export default Checkout

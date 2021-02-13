@@ -1,10 +1,9 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import {generateCode} from '../../../redux/reducers/channelsReducer'
-
+import channels from '../../../modules/channels'
 const useStyles = makeStyles((theme) => ({
     buttonBox: {
       display: 'flex',
@@ -16,10 +15,12 @@ const useStyles = makeStyles((theme) => ({
   })
 )
 
-const Step1 = ({code, generateCode}) => {
+const Step1 = () => {
+    const dispatch = useDispatch()
+    const code = useSelector(channels.getCode)
     const classes = useStyles()
     const generate = () => {
-        generateCode()
+        dispatch(channels.generateCode())
     }
     return (
         <div>
@@ -45,12 +46,4 @@ const Step1 = ({code, generateCode}) => {
     )
 }
 
-const mapStateToProps = (state) => {
-    return {
-        code: state.channels.code
-    }
-} 
-const mapDispatchToProps = {
-    generateCode
-} 
-export default connect(mapStateToProps, mapDispatchToProps )(Step1)
+export default Step1

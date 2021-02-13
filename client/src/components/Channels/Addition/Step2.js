@@ -3,11 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import Divider from '@material-ui/core/Divider'
-import StepLabel from '@material-ui/core/StepLabel'
-import StepContent from '@material-ui/core/StepContent'
 import StepButton from '@material-ui/core/StepButton'
 import Button from '@material-ui/core/Button'
-import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 import OneStep from './OneStep'
@@ -172,13 +169,5 @@ const useStyles = makeStyles((theme) => ({
       </div>
     );
   }
-const mapStateToProps = (state) => {
-    return {
-        code: state.channels.code
-    }
-} 
-const mapDispatchToProps = {
-    
-} 
 
-export default connect(mapStateToProps, mapDispatchToProps )(Step2)
+export default Step2

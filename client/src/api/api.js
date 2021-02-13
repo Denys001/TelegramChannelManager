@@ -3,11 +3,11 @@ import request from './request'
 const bot_token = "1523418706:AAEKsqYr1apnySDnao40hzl0Cxn0Xc8a7As"
 
 export let authAPI = {
-    login(data) {
-        return request('http://127.0.0.1:5000/api/auth/login', "POST", data)
+    async login(data) {
+        return await request('http://127.0.0.1:5000/api/auth/login', "POST", data)
     },
-    register(data) {
-        return request('http://127.0.0.1:5000/api/auth/register', "POST", data)
+    async register(data) {
+        return await request('http://127.0.0.1:5000/api/auth/register', "POST", data)
     }
 }
 export let channelAPI = {
@@ -23,8 +23,8 @@ export let channelAPI = {
     }
 }
 export const postAPI = {
-    async create(token, content, channel, image) {
-        console.log(image);
+    async create(data) {
+        const {token, content, channel, image} = data
         if (image) {
             const fd = new FormData()
             fd.append('photo', image, image.name)
@@ -36,8 +36,12 @@ export const postAPI = {
                     'Content-Type': "multipart/form-data"
                 }
             })
-            console.log(res.data);
-            return await axios.post('http://127.0.0.1:5000/api/posts/createWithPhoto', fd, {
+            const fd_server = new FormData()
+            fd_server.append('photo', image, image.name)
+            fd_server.append('channelId', channel._id)
+            fd_server.append('telegramId', res.data.result.message_id)
+            fd_server.append('content', content)
+            return await axios.post('http://127.0.0.1:5000/api/posts/createWithPhoto', fd_server, {
                 headers: {
                     'Authorization': `bearer ${token}`,
                     'Content-Type': "multipart/form-data",

@@ -1,7 +1,8 @@
 import './App.css';
 import React from 'react'
 import { Provider } from 'react-redux'
-import { store } from './redux/store'
+//import { store } from './redux/store'
+import store from './modules/store'
 import MainRoute from './components/Routes/MainRoute'
 function App() {
   return (

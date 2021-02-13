@@ -5,7 +5,7 @@ const schema = new Schema({
     content: {type: String, required: true},
     image: {type: String, required: true, default: "uploads\\not-found.png"},
     date: { type: Date, require: true.valueOf, default: Date.now()}, 
-    channel: { type: Types.ObjectId, ref: 'Channel'}
+    channelId: { type: Types.ObjectId, ref: 'Channel'}
 })
 
 module.exports = model('Post', schema)

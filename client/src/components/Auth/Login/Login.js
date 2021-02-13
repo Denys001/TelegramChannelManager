@@ -1,17 +1,20 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom'
 import LoginForm from './loginForm';
+import {useDispatch, useSelector} from 'react-redux'
 import { AuthLayout } from './../authLayout'
-import { connect } from 'react-redux'
-import { LoginRequest } from '../../../redux/reducers/authReducer'
+import auth from '../../../modules/auth'
 import Loader from '../../common/Loader/Loader'
-import Cookies from 'js-cookie'
 
 function Login(props) {
-    const submit = (data) => {
-        props.LoginRequest(data)
+    const dispatch = useDispatch()
+    const isFetching = useSelector(auth.getFetching)
+    const isAuth = useSelector(auth.getIsAuth)
+
+    const Submit = (data) => {
+        dispatch(auth.login(data.email, data.password))
     }
-    if (props.isAuth) {
+    if (isAuth) {
 
         return (
             <Redirect to="/" />
@@ -19,20 +22,9 @@ function Login(props) {
     }
     return (
         <AuthLayout>
-            {props.fetching ? <Loader></Loader> : ''}
-            <LoginForm onSubmit={submit}></LoginForm>
+            {isFetching ? <Loader></Loader> : ''}
+            <LoginForm onSubmit={Submit}></LoginForm>
         </AuthLayout>
     );
 }
-const mapStateToProps = (state) => {
-    return {
-        fetching: state.auth.fetching,
-        isAuth: state.auth.isAuth,
-        token: state.auth.token,
-    }
-}
-const mapDispatchToProps = {
-    LoginRequest,
-}
-const LoginContainer = connect(mapStateToProps, mapDispatchToProps)(Login)
-export default LoginContainer
+export default Login

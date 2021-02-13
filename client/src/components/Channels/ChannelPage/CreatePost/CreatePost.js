@@ -3,33 +3,37 @@ import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { EditorState, convertToRaw, ContentState } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import htmlToDraft from 'html-to-draftjs'
 import Button from '@material-ui/core/Button'
-import { setCurrentPostText, create, setImage } from '../../../../redux/reducers/postsReducer'
+import posts from '../../../../modules/posts'
+import Loader from '../../../common/Loader/Loader'
 const CreatePost = (props) => {
+    const dispatch = useDispatch()
+    const isButtonDisabled = useSelector(posts.getIsButtonDisabled)
+    const channels = useSelector(posts.getChannels)
+    const currentPostText = useSelector(posts.getContent)
+    const fetching = useSelector(posts.getFetching)
     const inputFile = createRef()
-    const [editorState, setEditorState] = useState(EditorState.createWithContent(ContentState.createFromBlockArray(htmlToDraft(props.currentPostText).contentBlocks)))
+    const [editorState, setEditorState] = useState(EditorState.createWithContent(ContentState.createFromBlockArray(htmlToDraft(currentPostText).contentBlocks)))
     const onEditorStateChange = (content) => {
         setEditorState(content)
     }
     const onContentStateChange = (content) => {
-        props.setCurrentPostText(draftToHtml(content))
+        dispatch(posts.setCurrentPostText(draftToHtml(content)))
     }
     const clickHandle = async () => {
-        const channel = props.channels.filter(el => el._id = props.channel_id)
-        const { token, currentPostText } = props
-        props.create(token, channel[0], currentPostText, props.image)
+        const channel = channels.filter(el => el._id = props.channel_id)
+        dispatch(posts.createPost(channel[0]))
         setEditorState(EditorState.createEmpty())
-        console.log(null);
         inputFile.current.value = null
-        inputFile.current.files = null
     }
     const onChangeFileHandler = (event) => {
-        props.setImage(event.target.files[0])
+        dispatch(posts.setImage(event.target.files[0]))
     }
     return (
         <div>
+            {fetching && <Loader></Loader>}
             <Editor
                 editorState={editorState}
                 onEditorStateChange={onEditorStateChange}
@@ -51,22 +55,11 @@ const CreatePost = (props) => {
                 <input type='file' name='postsImage' onChange={onChangeFileHandler} ref={inputFile}/>
             </form>
             
-            <Button variant="contained" color="primary" disabled={props.buttonDisable} onClick={clickHandle}>
+            <Button variant="contained" color="primary" disabled={isButtonDisabled} onClick={clickHandle}>
                 Primary
             </Button>
         </div>
     )
 }
-const mapStateToProps = (state) => {
-    return {
-        currentPostText: state.posts.currentPostText,
-        token: state.auth.token,
-        channels: state.channels.channels,
-        buttonDisable: state.posts.buttonDisable,
-        image: state.posts.image,
-    }
-}
-const mapDispatchToProps = {
-    setCurrentPostText, create, setImage
-}
-export default connect(mapStateToProps, mapDispatchToProps)(CreatePost) 
+
+export default CreatePost
