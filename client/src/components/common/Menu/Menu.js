@@ -106,7 +106,7 @@ function ResponsiveDrawer(props) {
       <Divider />
       <List>
         {channels !== undefined && channels.length !== 0 && channels.map((el) => (
-          <Link to={`/channel/${el._id}`} className={css.Link}>
+          <Link to={`/channel/${el._id}`} className={css.Link} exact>
             <ListItem button key={el.name}>
               <ListItemIcon><TelegramIcon /></ListItemIcon>
               <ListItemText primary={el.name} />

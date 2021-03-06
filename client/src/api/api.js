@@ -24,7 +24,7 @@ export let channelAPI = {
 }
 export const postAPI = {
     async create(data) {
-        const {token, content, channel, image} = data
+        const { token, content, channel, image } = data
         if (image) {
             const fd = new FormData()
             fd.append('photo', image, image.name)
@@ -40,17 +40,22 @@ export const postAPI = {
             fd_server.append('photo', image, image.name)
             fd_server.append('channelId', channel._id)
             fd_server.append('telegramId', res.data.result.message_id)
-            fd_server.append('content', content)
+            fd_server.append('content', content || '')
             return await axios.post('http://127.0.0.1:5000/api/posts/createWithPhoto', fd_server, {
                 headers: {
                     'Authorization': `bearer ${token}`,
                     'Content-Type': "multipart/form-data",
                 }
             })
-        }else{
+        } else {
             return await request('http://127.0.0.1:5000/api/posts/create', "POST", { content, channelId: channel._id, telegramId: channel.telegramId }, {
                 'Authorization': `bearer ${token}`
             })
         }
+    },
+    async getPosts({channel, token, pageNumber, pageSize }) {
+        return await request(`http://127.0.0.1:5000/api/posts/${channel}?pageNumber=${pageNumber}&pageSize=${pageSize}`, "GET", null, {
+            'Authorization': `bearer ${token}`
+        })
     }
 }

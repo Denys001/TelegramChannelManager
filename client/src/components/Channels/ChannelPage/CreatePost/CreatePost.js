@@ -3,7 +3,7 @@ import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { EditorState, convertToRaw, ContentState } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
-import { connect, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import htmlToDraft from 'html-to-draftjs'
 import Button from '@material-ui/core/Button'
 import posts from '../../../../modules/posts'
@@ -23,7 +23,7 @@ const CreatePost = (props) => {
         dispatch(posts.setCurrentPostText(draftToHtml(content)))
     }
     const clickHandle = async () => {
-        const channel = channels.filter(el => el._id = props.channel_id)
+        const channel = channels.filter(el => el._id === props.channel_id)
         dispatch(posts.createPost(channel[0]))
         setEditorState(EditorState.createEmpty())
         inputFile.current.value = null
@@ -51,13 +51,14 @@ const CreatePost = (props) => {
                     }
                 }}
             />
-            <form id="uploadForm" enctype="multipart/form-data">
-                <input type='file' name='postsImage' onChange={onChangeFileHandler} ref={inputFile}/>
+            <form id="uploadForm" enctype="multipart/form-data" className="mb-1">
+                <input type='file' name='postsImage' onChange={onChangeFileHandler} ref={inputFile} />
             </form>
-            
-            <Button variant="contained" color="primary" disabled={isButtonDisabled} onClick={clickHandle}>
-                Primary
-            </Button>
+            <div className="d-flex justify-content-center">
+                <Button variant="contained" color="primary" disabled={isButtonDisabled} onClick={clickHandle}>
+                    Опублікувати
+                </Button>
+            </div>
         </div>
     )
 }

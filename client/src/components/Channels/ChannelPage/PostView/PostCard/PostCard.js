@@ -19,11 +19,11 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
+    height: '100%',
     margin: 'auto',
   },
   media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
+    height: 400
   },
   expand: {
     transform: 'rotate(0deg)',
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function PostCard() {
+function PostCard(props) {
   const classes = useStyles();
   return (
     <Card className={classes.root}>
@@ -55,20 +55,21 @@ function PostCard() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        //title={}
+        subheader={props.subheader}
       />
       <CardMedia
         className={classes.media}
-        image="/static/images/cards/paella.jpg"
-        title="Paella dish"
+        image={props.image}
+        component="img"
+      //title="Paella dish"
       />
+      {/* <img src="http://localhost:5000/uploads/16132302542147piGl5w3LVIhcnTsUM6JRLJp4amTY9WUh6GeryYm.jpeg" className={classes.media} ></img> */}
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook together with your
-          guests. Add 1 cup of frozen peas along with the mussels, if you like.
+          <td dangerouslySetInnerHTML={{__html: props.content.length >= 100 ? props.content.substring(0, 100) + "..." : props.content }} />
         </Typography>
-      </CardContent> 
+      </CardContent>
     </Card>
   );
 }

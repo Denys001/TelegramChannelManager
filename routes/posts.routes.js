@@ -66,7 +66,6 @@ router.post(
 router.post(
     '/createWithPhoto',
     [
-        check('content', "Контент обов'язковий").notEmpty(),
         check('telegramId', "TelegranId обов'язкове").notEmpty(),
         check('channelId', "Id каналу обов'язкове").notEmpty(),
     ],
@@ -85,9 +84,11 @@ router.post(
             const { channelId, telegramId, content } = req.body
             const post = new Post({
                 telegramId,
-                content,
+                content: content || ' ',
                 channelId,
-                image: req.file.path
+                image: req.file.path,
+                date: Date.now()
+
             })
             await post.save()
             res.status(201).json({
@@ -102,4 +103,27 @@ router.post(
         }
     }
 )
+router.get('/:channel_id', isAuth, async (req, res) => {
+    try {
+        const userId = req.user.userId
+        const channel_id = req.params.channel_id
+        const posts = await Post.find({ channelId: channel_id }).sort({date: -1})
+        var { pageNumber, pageSize} = req.query
+        const amount = posts.length
+        pageNumber = pageNumber || 1
+        pageSize = pageSize || 10
+        const pagesCount = Math.ceil (amount / pageSize )
+        
+        res.status(201).json({
+            posts: posts.slice(pageSize*pageNumber - pageSize, pageSize*pageNumber ),
+            amount,
+            "ResultCode": 0
+        })
+    } catch (e) {
+        res.status(500).json({
+            message: "Пости не знайдено",
+            "ResultCode": 1
+        })
+    }
+})
 module.exports = router

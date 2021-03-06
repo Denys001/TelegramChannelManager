@@ -1,20 +1,8 @@
 const initialState = {
-    items: [
-        "fddffd",
-        "fddffd",
-        "fddffd",
-        "fddffd",
-        "fddffd",
-        "fddffd",
-        "fddffd",
-        "fddffd",
-        "fddffd",
-        "fddffd",
-        "fddffd",
-        "fddffd",
-    ],
+    items: [],
     currentPage: 1,
-    totalItemsCount: 12,
+    totalItemsCount: 1,
+    pageSize: 9,
     fetching: false,
     currentPostText: '',
     isButtonDisabled: true,
@@ -43,6 +31,12 @@ export default (state = initialState, { type, payload }) => {
         case 'POSTS/SET/BUTTON/DISABLED':
             return { ...state, ...payload }
         case 'POSTS/SET/IMAGE':
+            return { ...state, ...payload }
+        case 'POSTS/SET/':
+            return { ...state, ...payload }
+        case 'POSTS/SET/TotalCount':
+            return { ...state, ...payload }
+        case 'POSTS/SET/CurrentPage':
             return { ...state, ...payload }
 
         default:

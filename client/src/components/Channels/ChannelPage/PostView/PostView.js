@@ -21,12 +21,26 @@ const useStyles = makeStyles((theme) => ({
   }))
 const PostView = (props) => {
     const handleChangePage = (e, v) => {
-      console.log(v);
+      props.paginateHandle(v)
     }
     const pagesCount = Math.ceil (props.totalCount / props.pageSize)
     const classes = useStyles()
     const content = props.data && props.data.length !== 0
-                    ? props.data.map(el => <Grid item xs={12} sm={6} md={6} lg={4} xl={3}> <PostCard/> </Grid>)
+                    ? props.data.map(
+                        el => 
+                          <Grid 
+                            item 
+                            xs={12} sm={6} md={6} lg={4} xl={3}> 
+                            <PostCard 
+                              subheader={
+                                new Intl.DateTimeFormat('uk-DE', {
+                                  year: 'numeric', month: 'long',day: '2-digit', hour: '2-digit', minute: '2-digit'
+                                }).format(new Date(el.date).getTime())
+                              }
+                              image={"http://localhost:5000/"+ el.image}
+                              content={el.content}
+                            /> 
+                          </Grid>)
                     : (<Typography variant="h4" className={classes.empty} align='center'>Покищо постів нема...</Typography>)           
     return (
       <div className={classes.root}>
@@ -34,7 +48,7 @@ const PostView = (props) => {
             container 
             spacing={3}
             justify="center"
-            alignItems="center"
+            alignItems="stretch"
         >
           {content}
         </Grid>
