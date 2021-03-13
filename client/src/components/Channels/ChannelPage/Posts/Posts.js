@@ -1,39 +1,41 @@
 import React from 'react'
-import { useEffect} from 'react'
-import { useParams} from 'react-router-dom'
+import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import PostsView from '../PostView/PostView'
-import PostsSagas from './../../../../modules/posts'
+import PostsReducer from './../../../../modules/posts'
 import Loader from '../../../common/Loader/Loader'
 const Posts = (props) => {
-    let { id } = useParams()
+    const id = useSelector(PostsReducer.getCurrentChannel)
     const dispatch = useDispatch()
-    const DATA = useSelector(PostsSagas.getPosts)
-    const currentPage = useSelector(PostsSagas.getCurrentPage)
-    const totalItemsCount = useSelector(PostsSagas.getTotalItemsCount)
-    const pageSize = useSelector(PostsSagas.getPageSize)
-    const fetching = useSelector(PostsSagas.getFetching)
-    useEffect(()=>{
-        dispatch(PostsSagas.posts(id))
+    const DATA = useSelector(PostsReducer.getPosts)
+    const currentPage = useSelector(PostsReducer.getCurrentPage)
+    const totalItemsCount = useSelector(PostsReducer.getTotalItemsCount)
+    const pageSize = useSelector(PostsReducer.getPageSize)
+    const fetching = useSelector(PostsReducer.getFetching)
+    useEffect(() => {
+        dispatch(PostsReducer.posts(id))
     }, [])
     const paginateHandleCreate = () => {
         return (page) => {
-            dispatch(PostsSagas.setCurrentPage(page))
-            console.log(id);
-            dispatch(PostsSagas.posts(id))
+            dispatch(PostsReducer.setCurrentPage(page))
+            dispatch(PostsReducer.posts(id))
         }
     }
     const paginateHandle = paginateHandleCreate()
     return (
         <div>
             {fetching && <Loader></Loader>}
-            <PostsView 
-                data={DATA} 
-                page={currentPage} 
-                totalCount={totalItemsCount} 
-                pageSize={pageSize}
-                paginateHandle={paginateHandle}
-            ></PostsView>
+            <div>
+                {fetching && <Loader></Loader>}
+                <PostsView
+                    data={DATA}
+                    page={currentPage}
+                    totalCount={totalItemsCount}
+                    pageSize={pageSize}
+                    paginateHandle={paginateHandle}
+                ></PostsView>
+            </div>
         </div>
     )
 }

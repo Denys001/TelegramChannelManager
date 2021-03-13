@@ -8,4 +8,7 @@ export default {
     setPosts: (value)=> ({type: 'POSTS/SET/', payload: { items: value }}),
     setTotalCount: (value)=> ({type: 'POSTS/SET/TotalCount', payload: { totalItemsCount: value }}),
     setCurrentPage: (value)=> ({type: 'POSTS/SET/CurrentPage', payload: { currentPage: value }}),
+    dublicate: (channel, message)=> ({type: 'POSTS/DUBLICATE', payload: { channel, message }}),
+    delete: (channel, message)=> ({type: 'POSTS/DELETE', payload: { message, channel}}),
+    setCurrentPost: (value) => ({type: 'POSTS/SET/CURRENT', payload: { currentPost: value}})
 }

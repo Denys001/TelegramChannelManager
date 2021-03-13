@@ -7,3 +7,26 @@
 .mb-1{
     margin-bottom: 10px;
 }
+#specialTab .MuiBox-root {
+    padding: 0 !important;
+}
+.alignTextCenter{
+    text-align: center;
+}
+.ml-5{
+    margin-left: 5%;
+}
+.diagram{
+    height: 1%;
+    width: 100%;
+}
+@media (max-width: 500px) {
+    .text{
+        font-size: 10px;
+    }
+}
+@media (max-width: 1000px) and (min-width: 500px) {
+    .text{
+        font-size: 12px;
+    }
+}

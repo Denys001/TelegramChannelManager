@@ -32,6 +32,19 @@ const usersAPI = {
             console.log("erorr", error);
         }
         return result.data
-    }
+    },
+    dublicate: async (chat_id, message_id) => {
+        const result = await instance.get(`copyMessage?chat_id=${chat_id}&from_chat_id=${chat_id}&message_id=${message_id}`)
+        return result.data
+    },
+    delete: async (chat_id, message_id) => {
+        const result = await instance.get(`deleteMessage?chat_id=${chat_id}&message_id=${message_id}`)
+        return result.data
+    },
+    getAmoutOfSubscribers: async (chat_id) => {
+        const result = await instance.get(`getChatMembersCount?chat_id=${chat_id}`)
+        return result.data
+    },
 }
+//dlete ip postman on api
 module.exports = usersAPI

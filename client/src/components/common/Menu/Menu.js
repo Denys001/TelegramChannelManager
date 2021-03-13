@@ -22,6 +22,9 @@ import css from './Menu.module.css'
 import TelegramIcon from '@material-ui/icons/Telegram'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import channelsReducer from '../../../modules/channels'
+import postsReducer from '../../../modules/posts'
+
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -106,7 +109,12 @@ function ResponsiveDrawer(props) {
       <Divider />
       <List>
         {channels !== undefined && channels.length !== 0 && channels.map((el) => (
-          <Link to={`/channel/${el._id}`} className={css.Link} exact>
+          <Link to={`/channel/${el._id}`} className={css.Link} exact onClick={()=>{
+            //console.log('choose channel');
+              dispatch(channelsReducer.setCurrentChannel(el._id))
+              //dispatch(postsReducer.posts(el._id, 1))
+
+          }}>
             <ListItem button key={el.name}>
               <ListItemIcon><TelegramIcon /></ListItemIcon>
               <ListItemText primary={el.name} />

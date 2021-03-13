@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
@@ -12,6 +12,10 @@ import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import Posts from '../ChannelPage/Posts/Posts'
 import CreatePost from '../ChannelPage/CreatePost/CreatePost'
+import { useSelector, useDispatch } from 'react-redux'
+import POSTS from '../../../modules/posts'
+import STATISTIC from '../../../modules/statistic'
+import Statistic from './Statistic'
 function TabPanel(props) {
   const { children, value, index, ...other } = props
   return (
@@ -48,22 +52,36 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
+  box: {
+    '&$.MuiBox-root': {
+      padding: '0px',
+    },
+  },
   [theme.breakpoints.down(429)]: {
     tab: {
-        fontSize: 9
+      fontSize: 9
     }
   },
   [theme.breakpoints.down(321)]: {
     tab: {
-        fontSize: 7.5
+      fontSize: 7.5,
     }
+  },
+  tabPanel: {
+    padding: '0%'
   }
 }))
 
 function ChannelPage(props) {
+  const dispatch = useDispatch()
   const classes = useStyles()
   const [value, setValue] = React.useState(0)
   const id = props.match.params.id
+  const id_ = useSelector(POSTS.getCurrentChannel)
+  useEffect(() => {
+    dispatch(POSTS.posts(id))
+    dispatch(STATISTIC.load())
+  }, [id_])
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
@@ -81,10 +99,10 @@ function ChannelPage(props) {
           aria-label="scrollable force tabs example"
           centered
         >
-          <Tab className={classes.tab}  label="Створити пост" icon={<PostAddIcon />} {...a11yProps(0)} />
+          <Tab className={classes.tab} label="Створити пост" icon={<PostAddIcon />} {...a11yProps(0)} />
           <Tab className={classes.tab} label="Пости" icon={<FilterIcon />} {...a11yProps(1)} />
-          <Tab className={classes.tab} label="Архів" icon={<StorageIcon />} {...a11yProps(2)} />
-          <Tab className={classes.tab} label="Статистика" icon={<TimelineIcon />} {...a11yProps(3)} />
+          {/* <Tab className={classes.tab} label="Архів" icon={<StorageIcon />} {...a11yProps(2)} /> */}
+          <Tab className={classes.tab} label="Статистика" icon={<TimelineIcon />} {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -93,11 +111,11 @@ function ChannelPage(props) {
       <TabPanel value={value} index={1}>
         <Posts></Posts>
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      {/* <TabPanel value={value} index={2}>
         Item Three
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        Item Four
+      </TabPanel> */}
+      <TabPanel value={value} index={2} classes={{ root: classes.box }} id="specialTab" component='p' m={0} >
+        <Statistic></Statistic>
       </TabPanel>
     </div>
   )

@@ -20,7 +20,12 @@ export let channelAPI = {
         return await request('http://127.0.0.1:5000/api/channels/add', "POST", { code }, {
             'Authorization': `bearer ${token}`
         })
-    }
+    },
+    async statistic({ token, channel }) {
+        return await request(`http://127.0.0.1:5000/api/channels/${channel}/statistic`, "GET", null, {
+            'Authorization': `bearer ${token}`
+        })
+    },
 }
 export const postAPI = {
     async create(data) {
@@ -57,5 +62,15 @@ export const postAPI = {
         return await request(`http://127.0.0.1:5000/api/posts/${channel}?pageNumber=${pageNumber}&pageSize=${pageSize}`, "GET", null, {
             'Authorization': `bearer ${token}`
         })
-    }
+    },
+    async dublicate({channel, message, token }) {
+        return await request(`http://127.0.0.1:5000/api/posts/dublicate/${channel}/${message}`, "GET", null, {
+            'Authorization': `bearer ${token}`
+        })
+    },
+    async delete({message, token }) {
+        return await request(`http://127.0.0.1:5000/api/posts/${message}`, "DELETE", null, {
+            'Authorization': `bearer ${token}`
+        })
+    },
 }

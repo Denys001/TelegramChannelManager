@@ -6,14 +6,12 @@ const initialState = {
     fetching: false,
     currentPostText: '',
     isButtonDisabled: true,
-    image: null
+    image: null, 
+    currentPost: null
 }
 
 export default (state = initialState, { type, payload }) => {
     switch (type) {
-
-        case 'POSTS/SET/FETCHING':
-            return { ...state, ...payload }
         case 'POSTS/SET/CURRENT/POST/TEXT':
             var content = payload.currentPostText
             content = content.replaceAll('<p>', '')
@@ -22,12 +20,20 @@ export default (state = initialState, { type, payload }) => {
             content = content.replaceAll('</ul>\n', '')
             content = content.replaceAll('<li>', '- ')
             content = content.replaceAll('</li>', '')
+            content = content.replaceAll(/<span[^>]*>/g, '')
+            content = content.replaceAll('</span>', '')
+            content = content.replaceAll('&nbsp', '')
+            content = content.replaceAll(/ style="[^"]*"/g, '')
+            content = content.replaceAll('</span>', '')
+            content = content.replaceAll('<p>', '')
             content = content.trim()
             var disabled = true
-            if(content !== ''){
+            if (content !== '') {
                 disabled = false
             }
-            return { ...state, ...payload, isButtonDisabled: disabled  }
+            return { ...state, ...payload, isButtonDisabled: disabled }
+        case 'POSTS/SET/FETCHING':
+            return { ...state, ...payload }
         case 'POSTS/SET/BUTTON/DISABLED':
             return { ...state, ...payload }
         case 'POSTS/SET/IMAGE':
@@ -38,7 +44,12 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, ...payload }
         case 'POSTS/SET/CurrentPage':
             return { ...state, ...payload }
-
+        case 'POSTS/DUBLICATE':
+            return { ...state, ...payload }
+        case 'POSTS/DELETE':
+            return { ...state, ...payload }
+        case 'POSTS/SET/CURRENT':
+            return { ...state, ...payload }
         default:
             return state
     }

@@ -9,4 +9,6 @@ export default {
     getCurrentPage: (state) => state.posts.currentPage,
     getTotalItemsCount: (state) => state.posts.totalItemsCount,
     getPageSize: (state) => state.posts.pageSize,
+    getCurrentChannel: (state) => state.channels.currentChannel,
+    getCurrentPost: (state) => state.posts.currentPost,
 }

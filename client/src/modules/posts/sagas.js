@@ -9,18 +9,18 @@ function* CreatePost({ payload }) {
     const token = yield select(selectors.getToken)
     const image = yield select(selectors.getImage)
     var content = yield select(selectors.getContent)
-    content = content.replaceAll('<p>', '');
-    content = content.replaceAll('</p>', '');
-    content = content.replaceAll(/(<ul>\n)/g, '');
-    content = content.replaceAll('</ul>\n', '');
-    content = content.replaceAll('<li>', '- ');
-    content = content.replaceAll('</li>', '');
-    content = content.replaceAll(/<span[^>]*>/g, '');
-    content = content.replaceAll('</span>', '');
-    content = content.replaceAll('&nbsp;', '');
-    content = content.replaceAll(/ style="[^"]*"/g, '');
-    content = content.replaceAll('</span>', '');
-    content = content.replaceAll('<p>', '');
+    content = content.replaceAll('<p>', '')
+    content = content.replaceAll('</p>', '')
+    content = content.replaceAll(/(<ul>\n)/g, '')
+    content = content.replaceAll('</ul>\n', '')
+    content = content.replaceAll('<li>', '- ')
+    content = content.replaceAll('</li>', '')
+    content = content.replaceAll(/<span[^>]*>/g, '')
+    content = content.replaceAll('</span>', '')
+    content = content.replaceAll('&nbsp', '')
+    content = content.replaceAll(/ style="[^"]*"/g, '')
+    content = content.replaceAll('</span>', '')
+    content = content.replaceAll('<p>', '')
     const data = { token, content, channel: payload.channel, image }
     try {
         const result = yield call(postAPI.create, data)
@@ -48,9 +48,39 @@ function* getPosts({ payload }) {
     }
     yield put(actions.setFetching(false))
 }
+function* dublicate({ payload }) {
+    yield put(actions.setFetching(true))
+    const page = yield select(selectors.getCurrentPage)
+    const token = yield select(selectors.getToken)
+    try {
+        const result = yield call(postAPI.dublicate, {
+            message: payload.message, channel: payload.channel, token
+        })
+        yield put(actions.posts(payload.channel, page))
+    } catch (error) {
+
+    }
+    yield put(actions.setFetching(false))
+}
+function* deletePost({ payload }) {
+    yield put(actions.setFetching(true))
+    const page = yield select(selectors.getCurrentPage)
+    const token = yield select(selectors.getToken)
+    try {
+        const result = yield call(postAPI.delete, {
+            message: payload.message, token
+        })
+        yield put(actions.posts(payload.channel, page))
+    } catch (error) {
+
+    }
+    yield put(actions.setFetching(false))
+}
 export default function* () {
     yield all([
         takeEvery('POSTS/CREATE', CreatePost),
         takeEvery('POSTS/GET', getPosts),
-    ]);
+        takeEvery('POSTS/DUBLICATE', dublicate),
+        takeEvery('POSTS/DELETE', deletePost),
+    ])
 }

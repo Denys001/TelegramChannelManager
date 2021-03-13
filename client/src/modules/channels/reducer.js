@@ -3,7 +3,8 @@ const initialState = {
     code: null,
     fetching: false,
     isError: false,
-    errorMessage: ''
+    errorMessage: '',
+    currentChannel: null
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -24,6 +25,8 @@ export default (state = initialState, { type, payload }) => {
         case "CHANNELS/SET/ISERROR":
             return { ...state, ...payload}
         case "CHANNELS/SET/ERROR/MESSAGE":
+            return { ...state, ...payload}
+        case "CHANNELS/SET/CURRENT/CHANNEL":
             return { ...state, ...payload}
         default:
             return state

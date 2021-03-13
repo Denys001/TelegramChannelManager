@@ -52,7 +52,7 @@ const CreatePost = (props) => {
                 }}
             />
             <form id="uploadForm" enctype="multipart/form-data" className="mb-1">
-                <input type='file' name='postsImage' onChange={onChangeFileHandler} ref={inputFile} />
+                <input accept="image/*" type='file' name='postsImage' onChange={onChangeFileHandler} ref={inputFile} />
             </form>
             <div className="d-flex justify-content-center">
                 <Button variant="contained" color="primary" disabled={isButtonDisabled} onClick={clickHandle}>

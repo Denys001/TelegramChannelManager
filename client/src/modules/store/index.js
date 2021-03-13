@@ -4,6 +4,7 @@ import reducers from './reducers'
 import {sagas as auth} from '../auth'
 import {sagas as posts} from '../posts'
 import {sagas as channels} from '../channels'
+import {sagas as statistic} from '../statistic'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -15,3 +16,4 @@ export default createStore(reducers, compose(
 sagaMiddleware.run(auth)
 sagaMiddleware.run(posts)
 sagaMiddleware.run(channels)
+sagaMiddleware.run(statistic)

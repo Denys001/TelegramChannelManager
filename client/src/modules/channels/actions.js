@@ -7,4 +7,5 @@ export default {
     addChannels: ()=>({type: 'CHANNELS/ADD/CHANNELS'}),
     setIsError: (value)=>({type: 'CHANNELS/SET/ISERROR', payload: { isError: value}}),
     setErrorMessage: (value)=>({type: 'CHANNELS/SET/ERROR/MESSAGE', payload: { errorMessage: value}}),
+    setCurrentChannel: (value)=>({type: 'CHANNELS/SET/CURRENT/CHANNEL', payload: { currentChannel: value}}),
 }
