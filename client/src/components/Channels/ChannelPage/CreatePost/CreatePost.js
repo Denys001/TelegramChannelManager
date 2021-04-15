@@ -12,6 +12,7 @@ const CreatePost = (props) => {
     const dispatch = useDispatch()
     const isButtonDisabled = useSelector(posts.getIsButtonDisabled)
     const channels = useSelector(posts.getChannels)
+    const photo = useSelector(state => state.posts.image)
     const currentPostText = useSelector(posts.getContent)
     const fetching = useSelector(posts.getFetching)
     const inputFile = createRef()
@@ -23,6 +24,21 @@ const CreatePost = (props) => {
         dispatch(posts.setCurrentPostText(draftToHtml(content)))
     }
     const clickHandle = async () => {
+        var html = currentPostText
+        html = html.replace(/<style([\s\S]*?)<\/style>/gi, '');
+        html = html.replace(/<script([\s\S]*?)<\/script>/gi, '');
+        html = html.replace(/<\/div>/ig, '\n');
+        html = html.replace(/<\/li>/ig, '\n');
+        html = html.replace(/<li>/ig, '  *  ');
+        html = html.replace(/<\/ul>/ig, '\n');
+        html = html.replace(/<\/p>/ig, '\n');
+        html = html.replace(/<br\s*[\/]?>/gi, "\n");
+        html = html.replace(/<[^>]+>/ig, '');
+        console.log(photo);
+        if(photo && html.length > 1024){
+            alert('Повідомлення занадто велике')
+            return
+        }
         const channel = channels.filter(el => el._id === props.channel_id)
         dispatch(posts.createPost(channel[0]))
         setEditorState(EditorState.createEmpty())

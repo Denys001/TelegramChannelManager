@@ -31,10 +31,11 @@ function* AddChannels({ payload }) {
             yield put(actions.setIsError(true))
             yield put(actions.setErrorMessage(result.message))
         }
-        yield put(actions.setFetching(false))
+        
     } catch (error) {
         console.log(error);
     }
+    yield put(actions.setFetching(false))
 }
 
 export default function* () {

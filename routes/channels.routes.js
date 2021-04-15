@@ -110,16 +110,18 @@ router.get('/:id/statistic', isAuth, async (req, res) => {
             posts_current_year_data.push(tmp[i])
             avg_month+= tmp[i]
         }
-        avg_month =  Math.trunc(avg_month / new Date(Date.now()).getMonth()+1)
+        avg_month =  Math.trunc(avg_month / (new Date(Date.now()).getMonth()+1))
         min = posts[0]
         max = posts[posts.length-1]
         var posts_every_day = [], j = new Date(min), end_date = new Date(max)
-        while(true){
-            if(j.setHours(0,0,0,0) === end_date.setHours(0,0,0,0)){
-                break
+        if(min){
+            while(true){
+                if(j.setHours(0,0,0,0) === end_date.setHours(0,0,0,0)){
+                    break
+                }
+                posts_every_day.push(posts.filter(el => new Date(el).setHours(0,0,0,0).valueOf() === j.valueOf()).length)
+                j.setDate(j.getDate() + 1)
             }
-            posts_every_day.push(posts.filter(el => new Date(el).setHours(0,0,0,0).valueOf() === j.valueOf()).length)
-            j.setDate(j.getDate() + 1)
         }
         res.status(201).json({
             "message": "Статистика каналу",

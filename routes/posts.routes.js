@@ -157,9 +157,10 @@ router.get('/dublicate/:channel_id/:message_id', isAuth, async (req, res) => {
         })
         await post.save()
         try {
+            console.log('here');
             await api.delete(channel.telegramId, parseInt(post.telegramId) + 1)
         } catch (error) {
-
+            console.log('error ' + error.message);
         }
         res.status(201).json({
             "message": "Пост створено був створений",
