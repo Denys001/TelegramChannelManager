@@ -5,6 +5,9 @@ import {sagas as auth} from '../auth'
 import {sagas as posts} from '../posts'
 import {sagas as channels} from '../channels'
 import {sagas as statistic} from '../statistic'
+import {sagas as archive} from '../archive'
+import {sagas as trash} from '../trash'
+import {sagas as quizs} from '../quizs'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -17,3 +20,6 @@ sagaMiddleware.run(auth)
 sagaMiddleware.run(posts)
 sagaMiddleware.run(channels)
 sagaMiddleware.run(statistic)
+sagaMiddleware.run(archive)
+sagaMiddleware.run(trash)
+sagaMiddleware.run(quizs)

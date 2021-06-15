@@ -33,21 +33,14 @@ export default (state = initialState, { type, payload }) => {
             }
             return { ...state, ...payload, isButtonDisabled: disabled }
         case 'POSTS/SET/FETCHING':
-            return { ...state, ...payload }
         case 'POSTS/SET/BUTTON/DISABLED':
-            return { ...state, ...payload }
         case 'POSTS/SET/IMAGE':
-            return { ...state, ...payload }
         case 'POSTS/SET/':
-            return { ...state, ...payload }
         case 'POSTS/SET/TotalCount':
-            return { ...state, ...payload }
         case 'POSTS/SET/CurrentPage':
-            return { ...state, ...payload }
-        case 'POSTS/DUBLICATE':
-            return { ...state, ...payload }
-        case 'POSTS/DELETE':
-            return { ...state, ...payload }
+        //case 'POSTS/DUBLICATE':
+        //case 'POSTS/TRASH':
+        //case 'POSTS/DELETE':
         case 'POSTS/SET/CURRENT':
             return { ...state, ...payload }
         default:

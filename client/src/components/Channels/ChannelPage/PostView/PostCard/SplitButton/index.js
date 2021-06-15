@@ -11,15 +11,14 @@ import Paper from '@material-ui/core/Paper'
 import Popper from '@material-ui/core/Popper'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
-import { Redirect, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import POSTS from '../../../../../../modules/posts'
 import { makeStyles } from '@material-ui/core/styles'
 import Modal from '@material-ui/core/Modal'
-import { flexbox } from '@material-ui/system'
 import { useHistory } from 'react-router-dom'
 
-const options = ['Переглянути', 'Повторно опублікувати', 'Видалити']
+const options = ['Переглянути', 'Повторно опублікувати', 'Перемістити в архів', 'Скопіювати в архів', 'Видалити']
 
 function rand() {
   return Math.round(Math.random() * 20) - 10
@@ -57,27 +56,49 @@ export default function SplitButton(props) {
   const { id } = useParams()
   const dispatch = useDispatch()
   let history = useHistory()
+
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
   const [selectedIndex, setSelectedIndex] = React.useState(1)
 
   const [modalStyle] = React.useState(getModalStyle)
   const [openModal, setOpenModal] = React.useState(false)
+  const [openModal2, setOpenModal2] = React.useState(false)
   const handleOpenModal = () => {
+    setOpen(true)
+  }
+  const handleOpenModal2 = () => {
     setOpen(true)
   }
 
   const handleCloseModal = () => {
     setOpen(false)
   }
+  const handleCloseModal2 = () => {
+    setOpen(false)
+  }
   const confirmed = () => {
-    dispatch(POSTS.delete(id, props.id))
+    //dispatch(POSTS.delete(props.id))
+    dispatch(POSTS.trash(props.id))
     setOpenModal(false)
+  }
+  const confirmed2 = () => {
+    //dispatch(POSTS.delete(props.id))
+    dispatch(POSTS.archive(props.id))
+    setOpenModal2(false)
   }
   const handleClick = (index) => {
     switch (options[index]) {
       case 'Повторно опублікувати': {
         dispatch(POSTS.dublicate(id, props.id))
+        break
+      }
+      case 'Скопіювати в архів': {
+        dispatch(POSTS.copyToArchive(props.id))
+        break
+      }
+      case 'Перемістити в архів': {
+        setOpenModal2(true)
         break
       }
       case 'Видалити': {
@@ -170,6 +191,29 @@ export default function SplitButton(props) {
             </Grid>
             <Grid item xs={3}>
               <Button variant="contained" color="secondary" onClick={() => setOpenModal(false)}>
+                Ні
+              </Button>
+            </Grid>
+          </Grid>
+        </div>
+      </Modal>
+      <Modal
+        open={openModal2}
+        onClose={handleCloseModal2}
+      >
+        <div style={modalStyle} className={classes.paper}>
+          <h2 id="simple-modal-title">При переміщенні посту в архів він буде видалений з каналу. Ви впевнені що хочете перемістити пост?</h2>
+          <Grid container spacing={3}>
+            <Grid item xs>
+              <Grid item xs={3}>
+                <Paper>   </Paper>
+              </Grid>
+              <Button variant="contained" color="primary" onClick={confirmed2}>
+                Так
+              </Button>
+            </Grid>
+            <Grid item xs={3}>
+              <Button variant="contained" color="secondary" onClick={() => setOpenModal2(false)}>
                 Ні
               </Button>
             </Grid>

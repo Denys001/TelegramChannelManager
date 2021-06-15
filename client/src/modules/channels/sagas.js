@@ -31,7 +31,42 @@ function* AddChannels({ payload }) {
             yield put(actions.setIsError(true))
             yield put(actions.setErrorMessage(result.message))
         }
-        
+
+    } catch (error) {
+        console.log(error);
+    }
+    yield put(actions.setFetching(false))
+}
+function* edit({ payload }) {
+    yield put(actions.setFetching(true))
+    const token = yield select(selectors.getToken)
+    const currentChannel = yield select(selectors.getCurrentChannel)
+    const name = payload.name
+    const description = payload.description
+    const photo = payload.photo
+    try {
+        const res = yield call(channelAPI.edit, {
+            name, description, photo, channel: currentChannel, token
+        })
+        const result = yield call(channelAPI.channels, token)
+        yield put(actions.setChannels(result.channels))
+
+    } catch (error) {
+        console.log(error);
+    }
+    yield put(actions.setFetching(false))
+}
+function* deleteChannel({ payload }) {
+    yield put(actions.setFetching(true))
+    const token = yield select(selectors.getToken)
+    const currentChannel = yield select(selectors.getCurrentChannel)
+    try {
+        const res = yield call(channelAPI.delete, {
+            token, channel: currentChannel
+        })
+        const result = yield call(channelAPI.channels, token)
+        yield put(actions.setChannels(result.channels))
+
     } catch (error) {
         console.log(error);
     }
@@ -42,5 +77,7 @@ export default function* () {
     yield all([
         takeEvery('CHANNELS/LOAD/CHANNELS', LoadChannels),
         takeEvery('CHANNELS/ADD/CHANNELS', AddChannels),
+        takeEvery('CHANNELS/EDIT/CHANNELS', edit),
+        takeEvery('CHANNELS/DELETE/CHANNELS', deleteChannel),
     ]);
 }

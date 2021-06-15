@@ -21,7 +21,7 @@ function* CreatePost({ payload }) {
     content = content.replaceAll(/ style="[^"]*"/g, '')
     content = content.replaceAll('</span>', '')
     content = content.replaceAll('<p>', '')
-    const data = { token, content, channel: payload.channel, image }
+    const data = { token, content, channel: payload.channel, image, inArchive: payload.inArchieve }
     try {
         const result = yield call(postAPI.create, data)
         yield put(actions.setCurrentPostText(''))
@@ -66,11 +66,71 @@ function* deletePost({ payload }) {
     yield put(actions.setFetching(true))
     const page = yield select(selectors.getCurrentPage)
     const token = yield select(selectors.getToken)
+    const channel = yield select(selectors.getCurrentChannel)
     try {
         const result = yield call(postAPI.delete, {
             message: payload.message, token
         })
-        yield put(actions.posts(payload.channel, page))
+        yield put(actions.posts(channel, page))
+    } catch (error) {
+
+    }
+    yield put(actions.setFetching(false))
+}
+function* show({ payload }) {
+    yield put(actions.setFetching(true))
+    const token = yield select(selectors.getToken)
+    try {
+        const result = yield call(postAPI.show, {
+            id: payload.id, token
+        })
+       // console.log('post', result);
+        yield put(actions.setCurrentPost({...result.post, channelName: result.channelName}))
+    } catch (error) {
+
+    }
+    yield put(actions.setFetching(false))
+}
+function* trash({ payload }) {
+    yield put(actions.setFetching(true))
+    const page = yield select(selectors.getCurrentPage)
+    const token = yield select(selectors.getToken)
+    const channel = yield select(selectors.getCurrentChannel)
+    try {
+        const result = yield call(postAPI.trash, {
+            message: payload.message, token
+        })
+        yield put(actions.posts(channel, page))
+    } catch (error) {
+
+    }
+    yield put(actions.setFetching(false))
+}
+function* archive({ payload }) {
+    yield put(actions.setFetching(true))
+    const page = yield select(selectors.getCurrentPage)
+    const token = yield select(selectors.getToken)
+    const channel = yield select(selectors.getCurrentChannel)
+    try {
+        const result = yield call(postAPI.archive, {
+            message: payload.message, token
+        })
+        yield put(actions.posts(channel, page))
+    } catch (error) {
+
+    }
+    yield put(actions.setFetching(false))
+}
+function* copyToArchive({ payload }) {
+    yield put(actions.setFetching(true))
+    const page = yield select(selectors.getCurrentPage)
+    const token = yield select(selectors.getToken)
+    const channel = yield select(selectors.getCurrentChannel)
+    try {
+        const result = yield call(postAPI.copyToArchive, {
+            message: payload.message, token
+        })
+        //yield put(actions.posts(channel, page))
     } catch (error) {
 
     }
@@ -82,5 +142,9 @@ export default function* () {
         takeEvery('POSTS/GET', getPosts),
         takeEvery('POSTS/DUBLICATE', dublicate),
         takeEvery('POSTS/DELETE', deletePost),
+        takeEvery('POSTS/SHOW', show),
+        takeEvery('POSTS/TRASH', trash),
+        takeEvery('POSTS/ARCHIVE', archive),
+        takeEvery('POSTS/ARCHIVE/COPY', copyToArchive),
     ])
 }

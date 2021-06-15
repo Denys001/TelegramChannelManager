@@ -8,7 +8,11 @@ const initialState = {
     dateOfTheLastPost: 0, 
     postsCurrentYearData: [], 
     postsEveryDayData: [], 
-
+    archiveAmount: 0,
+    trashAmount: 0,
+    amounOfDefaultPosts: 0,
+    amounOfQuizPosts: 0,
+    postsLastMonthData: []
 }
 
 export default (state = initialState, { type, payload }) => {

@@ -68,18 +68,24 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   title: {
+    paddingLeft: 9,
+    fontSize: 16,
     [theme.breakpoints.down(500)]: {
       fontSize: 15
     },
     [theme.breakpoints.down(350)]: {
       fontSize: 12,
     },
+  },
+  LinkActive: {
+    color: theme.palette.primary
   }
 }));
 
 function ResponsiveDrawer(props) {
   const isFetching = useSelector(channelsReducer.getFetching)
   const channels = useSelector(channelsReducer.getChannels)
+  const id = useSelector(channelsReducer.getCurrentChannel)
   const dispatch = useDispatch()
   const { window } = props;
   const classes = useStyles();
@@ -99,8 +105,10 @@ function ResponsiveDrawer(props) {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <Link to='/channel/add' className={css.Link}>
-          <ListItem button key="1">
+        <Link to='/channel/add' className={css.Link} onClick={() => {
+          dispatch(channelsReducer.setCurrentChannel(null))
+        }}>
+          <ListItem button key="1" >
             <ListItemIcon><AddBoxIcon /></ListItemIcon>
             <ListItemText primary="Додати канал" />
           </ListItem>
@@ -109,14 +117,11 @@ function ResponsiveDrawer(props) {
       <Divider />
       <List>
         {channels !== undefined && channels.length !== 0 && channels.map((el) => (
-          <Link to={`/channel/${el._id}`} className={css.Link} exact onClick={()=>{
-            //console.log('choose channel');
-              dispatch(channelsReducer.setCurrentChannel(el._id))
-              //dispatch(postsReducer.posts(el._id, 1))
-
+          <Link to={`/channel/${el._id}`} className={css.Link} exact onClick={() => {
+            dispatch(channelsReducer.setCurrentChannel(el._id))
           }}>
             <ListItem button key={el.name}>
-              <ListItemIcon><TelegramIcon /></ListItemIcon>
+              <ListItemIcon><TelegramIcon className={id === el._id && css.LinkActive} /></ListItemIcon>
               <ListItemText primary={el.name} />
             </ListItem>
           </Link>
@@ -144,9 +149,11 @@ function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
+          <TelegramIcon />
           <Typography variant="h6" className={classes.title} noWrap>
-            Telegram channel content manager
+            TCCM
           </Typography>
+
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">

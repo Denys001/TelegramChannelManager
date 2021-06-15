@@ -5,4 +5,5 @@ export default {
     getChannels: state => state.channels.channels,
     getIsError: state => state.channels.isError,
     getErrorMessage: state => state.channels.errorMessage,
+    getCurrentChannel: state => state.channels.currentChannel,
 }

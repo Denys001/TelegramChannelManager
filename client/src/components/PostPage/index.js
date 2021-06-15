@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import POSTS from '../../modules/posts'
+import PostStore from '../../modules/posts'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
+import Loader from '../common/Loader/Loader'
+import { useParams } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
     root: {
     },
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     img: {
         //position: 'fixed',
         width: '35%',
-        border: 'solid 1px black',
+        //border: 'solid 1px black',
         borderRadius: 10
     },
     contentContainer: {
@@ -42,51 +44,141 @@ const useStyles = makeStyles((theme) => ({
     },
     container: {
         marginBottom: theme.spacing(3),
+    },
+    answer: {
+        fontSize: 14,
+        fontWeight: 'bold'
+    },
+    correctAnswer: {
+        fontSize: 14,
+        color: '#6be585',
+        fontWeight: 'bold'
+    },
+    explanation: {
+        fontSize: 14,
     }
 }))
 
 const PostPage = () => {
+    let { id } = useParams();
+    const dispatch = useDispatch()
     const classes = useStyles()
-    const post = useSelector(POSTS.getCurrentPost)
-    const channels = useSelector(POSTS.getChannels)
-    const channel = channels.filter(el => el._id === post.channelId)[0];
-    return (
-        <div>
-            <Grid container className={classes.container}>
-                <Grid item xs={12} sm={7} md={7} lg={7} xl={7} >
-                    <div className={classes.imgContainer}>
-                        <img src={"http://localhost:5000/" + post.image} className={classes.img}></img>
-                    </div>
-                </Grid>
-                <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
-                    <Grid container>
-                        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-                            <h1 className={classes.textAlignCenter}>
-                                <Link to={`/channel/${channel._id}`} exact className={classes.header}>
-                                    {channel.name}
-                                </Link>
-                            </h1>
-                            <p className={classes.textAlignCenter}>{
-                                new Intl.DateTimeFormat('uk-DE', {
-                                    year: 'numeric', month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit'
-                                }).format(new Date(post.date).getTime())
-                            }</p>
+    useEffect(() => {
+        dispatch(PostStore.show(id))
+    }, [])
+    const post = useSelector(PostStore.getCurrentPost)
+    const fetching = useSelector(PostStore.getFetching)
+    const makeQuiz = () => {
+        const content = JSON.parse(post.content)
+        console.log(content);
+        if (content.type === 'quiz') {
+            return (
+                <Paper className={classes.content}>
+                    <h3>{content.question}</h3>
+                    <ul>
+                        {
+                            content.options.map(
+                                (el, index) =>
+                                    <li
+                                        className={
+                                            index === content.correct_option_id
+                                                ? classes.correctAnswer
+                                                : classes.answer
+                                        }
+                                    >
+                                        {el}
+                                    </li>
+                            )
+                        }
+                    </ul>
+                    { (content.hasOwnProperty('explanation') && content.explanation.trim().length != 0) &&
+                        <p className={classes.explanation}> Пояснення: {
+                            content.explanation
+                        }</p>
+                    }
+                </Paper>
+            )
+        } else {
+            return (
+                <Paper className={classes.content}>
+                    <h3>{content.question}</h3>
+                    <ul>
+                        {
+                            content.options.map(
+                                (el, index) =>
+                                    <li
+                                        className={classes.answer}
+                                    >
+                                        {el}
+                                    </li>
+                            )
+                        }
+                    </ul>
+                </Paper>
+            )
+        }
+    }
+    if (fetching) {
+        return (
+            <Loader />
+        )
+    } else {
+
+        return (
+            <div>
+                <Grid container className={classes.container}>
+                    <Grid item xs={12} sm={7} md={7} lg={7} xl={7} >
+                        <div className={classes.imgContainer}>
+                            <img src={"http://localhost:5000/" + post.image} className={classes.img}></img>
+                        </div>
+                    </Grid>
+                    <Grid item xs={12} sm={5} md={5} lg={5} xl={5}>
+                        <Grid container>
+                            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+                                <h1 className={classes.textAlignCenter}>
+                                    <Link to={`/channel/${post.channelId}`} exact className={classes.header}>
+                                        {post.channelName}
+                                    </Link>
+                                </h1>
+                                <p className={classes.textAlignCenter}>{
+                                    new Intl.DateTimeFormat('uk-DE', {
+                                        year: 'numeric', month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                                    }).format(new Date(post.date).getTime())
+                                }</p>
+                                <p className={classes.textAlignCenter}>
+                                    {post.InArchive && "Пост в архіві"}
+                                </p>
+                                {/* {
+                                    post.type !== "default" &&
+                                    <p className={classes.textAlignCenter}>
+                                        Тип: Опитування
+                                    </p>
+                                } */}
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-            {post.content.trim() !== '' &&
-                <Grid container className={classes.contentContainer}>
-                    <Grid item xs={12} sm={8} md={8} lg={8} xl={8}>
-                        <Paper>
-                            <td className={classes.content} dangerouslySetInnerHTML={{
-                                __html: post.content.replaceAll('\n', '<br>')
-                            }} />
-                        </Paper>
+                {
+                    post.content.trim() !== '' &&
+                    <Grid container className={classes.contentContainer}>
+                        <Grid item xs={12} sm={8} md={8} lg={8} xl={8}>
+                            {
+                                post.type === "default"
+                                    ? <Paper>
+                                        <td
+                                            className={classes.content}
+                                            dangerouslySetInnerHTML={{
+                                                __html: post.content.replaceAll('\n', '<br>')
+                                            }}
+                                        />
+                                    </Paper>
+                                    : makeQuiz()
+                            }
+                        </Grid>
                     </Grid>
-                </Grid>
-            }
-        </div>
-    )
+                }
+            </div>
+        )
+    }
 }
 export default PostPage

@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 const makeContent = (value) => {
   if (value.length >= 100 || (value.match(new RegExp("\n", "g")) || []).length >= 2) {
-    if(value.length >= 100){
+    if (value.length >= 100) {
       return value.replaceAll('\n', '<br>').substring(0, 100) + "..."
     }
     if ((value.match(new RegExp("\n", "g")) || []).length >= 2) {
@@ -51,6 +51,14 @@ const makeContent = (value) => {
     }
   } else {
     return value.replaceAll('\n', '<br>')
+  }
+}
+const makeContentQuiz = (value) => {
+  const content = JSON.parse(value)
+  if (content.question.length >= 100) {
+    return content.question.substring(0, 100) + "..."
+  } else {
+    return content.question
   }
 }
 function PostCard(props) {
@@ -66,9 +74,18 @@ function PostCard(props) {
         action={
           <SplitButton id={props.id} post={props.el} />
         }
-        //title={}
-        subheader={props.subheader}
+        subheader={
+          <div>
+            <Typography gutterBottom variant="p" component="p">
+              {props.subheader}
+            </Typography>
+            <Typography gutterBottom variant="p" component="p">
+              {props.type === "default" ? "Пост" : "Опитування"}
+            </Typography>
+          </div>
+        }
       />
+
       <CardMedia
         className={classes.media}
         image={props.image}
@@ -77,9 +94,10 @@ function PostCard(props) {
       />
       {/* <img src="http://localhost:5000/uploads/16132302542147piGl5w3LVIhcnTsUM6JRLJp4amTY9WUh6GeryYm.jpeg" className={classes.media} ></img> */}
       <CardContent>
+
         <Typography variant="body2" component="p">
           <td dangerouslySetInnerHTML={{
-            __html: makeContent(props.content)
+            __html: props.type === "default" ? makeContent(props.content) : makeContentQuiz(props.content)
           }} />
         </Typography>
       </CardContent>
